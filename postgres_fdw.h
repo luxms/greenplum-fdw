@@ -145,11 +145,13 @@ extern bool is_foreign_param(PlannerInfo *root,
 				 Expr *expr);
 extern void deparseInsertSql(StringInfo buf, RangeTblEntry *rte,
 				 Index rtindex, Relation rel,
-				 List *targetAttrs, bool doNothing, List *returningList,
+				 List *targetAttrs, bool doNothing,
+				 List *withCheckOptionList, List *returningList,
 				 List **retrieved_attrs);
 extern void deparseUpdateSql(StringInfo buf, RangeTblEntry *rte,
 				 Index rtindex, Relation rel,
-				 List *targetAttrs, List *returningList,
+				 List *targetAttrs,
+				 List *withCheckOptionList, List *returningList,
 				 List **retrieved_attrs);
 extern void deparseDirectUpdateSql(StringInfo buf, PlannerInfo *root,
 					   Index rtindex, Relation rel,
