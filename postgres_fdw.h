@@ -1,12 +1,12 @@
 /*-------------------------------------------------------------------------
  *
- * postgres_fdw.h
+ * greenplum_fdw.h
  *		  Foreign-data wrapper for remote PostgreSQL servers
  *
  * Portions Copyright (c) 2012-2018, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
- *		  contrib/postgres_fdw/postgres_fdw.h
+ *		  contrib/greenplum_fdw/greenplum_fdw.h
  *
  *-------------------------------------------------------------------------
  */
@@ -22,7 +22,7 @@
 
 /*
  * FDW-specific planner information kept in RelOptInfo.fdw_private for a
- * postgres_fdw foreign table.  For a baserel, this struct is created by
+ * greenplum_fdw foreign table.  For a baserel, this struct is created by
  * postgresGetForeignRelSize, although some fields are not filled till later.
  * postgresGetForeignJoinPaths creates it for a joinrel, and
  * postgresGetForeignUpperPaths creates it for an upperrel.
@@ -110,7 +110,7 @@ typedef struct PgFdwRelationInfo
 	int			relation_index;
 } PgFdwRelationInfo;
 
-/* in postgres_fdw.c */
+/* in greenplum_fdw.c */
 extern int	set_transmission_modes(void);
 extern void reset_transmission_modes(int nestlevel);
 
