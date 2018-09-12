@@ -19,7 +19,7 @@ Another option is to configure FDW to use specific isolation level when it conne
  Same code, different isolation level
 ==============================
  
-This is the same code, as the postgres_fdw. The only changes are:
+This is the same code as the postgres_fdw. The only changes are:
  
  * postgres_fdw renamed to greenplum_fdw where reasonable
  * isolation level for remote transactions set to `SERIALIZABLE`
