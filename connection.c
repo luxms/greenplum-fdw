@@ -426,10 +426,9 @@ begin_remote_xact(ConnCacheEntry *entry)
 		elog(DEBUG3, "starting remote transaction on connection %p",
 			 entry->conn);
 
-		if (IsolationIsSerializable())
-			sql = "START TRANSACTION ISOLATION LEVEL SERIALIZABLE";
-		else
-			sql = "START TRANSACTION ISOLATION LEVEL REPEATABLE READ";
+        /* Greenplum supports only SERIALIZABLE, so we use it */
+		sql = "START TRANSACTION ISOLATION LEVEL SERIALIZABLE";
+
 		entry->changing_xact_state = true;
 		do_sql_command(entry->conn, sql);
 		entry->xact_depth = 1;
