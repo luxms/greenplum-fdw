@@ -1,18 +1,18 @@
 /*-------------------------------------------------------------------------
  *
- * postgres_fdw.c
+ * greenplum_fdw.c
  *		  Foreign-data wrapper for remote PostgreSQL servers
  *
  * Portions Copyright (c) 2012-2019, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
- *		  contrib/postgres_fdw/postgres_fdw.c
+ *		  contrib/greenplum_fdw/greenplum_fdw.c
  *
  *-------------------------------------------------------------------------
  */
 #include "postgres.h"
 
-#include "postgres_fdw.h"
+#include "greenplum_fdw.h"
 
 #include "access/htup_details.h"
 #include "access/sysattr.h"
@@ -80,7 +80,7 @@ enum FdwScanPrivateIndex
 
 /*
  * Similarly, this enum describes what's kept in the fdw_private list for
- * a ModifyTable node referencing a postgres_fdw foreign table.  We store:
+ * a ModifyTable node referencing a greenplum_fdw foreign table.  We store:
  *
  * 1) INSERT/UPDATE/DELETE statement text to be sent to the remote server
  * 2) Integer list of target attribute numbers for INSERT/UPDATE
@@ -122,7 +122,7 @@ enum FdwDirectModifyPrivateIndex
 };
 
 /*
- * Execution state of a foreign scan using postgres_fdw.
+ * Execution state of a foreign scan using greenplum_fdw.
  */
 typedef struct PgFdwScanState
 {
@@ -303,7 +303,7 @@ typedef struct
 /*
  * SQL functions
  */
-PG_FUNCTION_INFO_V1(postgres_fdw_handler);
+PG_FUNCTION_INFO_V1(greenplum_fdw_handler);
 
 /*
  * FDW callback routines
@@ -509,7 +509,7 @@ static void merge_fdw_options(PgFdwRelationInfo *fpinfo,
  * to my callback routines.
  */
 Datum
-postgres_fdw_handler(PG_FUNCTION_ARGS)
+greenplum_fdw_handler(PG_FUNCTION_ARGS)
 {
 	FdwRoutine *routine = makeNode(FdwRoutine);
 
@@ -1462,10 +1462,10 @@ postgresBeginForeignScan(ForeignScanState *node, int eflags)
 
 	/* Create contexts for batches of tuples and per-tuple temp workspace. */
 	fsstate->batch_cxt = AllocSetContextCreate(estate->es_query_cxt,
-											   "postgres_fdw tuple data",
+											   "greenplum_fdw tuple data",
 											   ALLOCSET_DEFAULT_SIZES);
 	fsstate->temp_cxt = AllocSetContextCreate(estate->es_query_cxt,
-											  "postgres_fdw temporary data",
+											  "greenplum_fdw temporary data",
 											  ALLOCSET_SMALL_SIZES);
 
 	/*
@@ -1634,7 +1634,7 @@ postgresAddForeignUpdateTargets(Query *parsetree,
 	TargetEntry *tle;
 
 	/*
-	 * In postgres_fdw, what we need is the ctid, same as for a regular table.
+	 * In greenplum_fdw, what we need is the ctid, same as for a regular table.
 	 */
 
 	/* Make a Var representing the desired value */
@@ -2077,7 +2077,7 @@ postgresIsForeignRelUpdatable(Relation rel)
 	ListCell   *lc;
 
 	/*
-	 * By default, all postgres_fdw foreign tables are assumed updatable. This
+	 * By default, all greenplum_fdw foreign tables are assumed updatable. This
 	 * can be overridden by a per-server setting, which in turn can be
 	 * overridden by a per-table setting.
 	 */
@@ -2416,7 +2416,7 @@ postgresBeginDirectModify(ForeignScanState *node, int eflags)
 
 	/* Create context for per-tuple temp workspace. */
 	dmstate->temp_cxt = AllocSetContextCreate(estate->es_query_cxt,
-											  "postgres_fdw temporary data",
+											  "greenplum_fdw temporary data",
 											  ALLOCSET_SMALL_SIZES);
 
 	/* Prepare for input conversion of RETURNING results. */
@@ -3523,7 +3523,7 @@ create_foreign_modify(EState *estate,
 
 	/* Create context for per-tuple temp workspace. */
 	fmstate->temp_cxt = AllocSetContextCreate(estate->es_query_cxt,
-											  "postgres_fdw temporary data",
+											  "greenplum_fdw temporary data",
 											  ALLOCSET_SMALL_SIZES);
 
 	/* Prepare for input conversion of RETURNING results. */
@@ -4307,7 +4307,7 @@ prepare_query_params(PlanState *node,
 	 * practice, we expect that all these expressions will be just Params, so
 	 * we could possibly do something more efficient than using the full
 	 * expression-eval machinery for this.  But probably there would be little
-	 * benefit, and it'd require postgres_fdw to know more than is desirable
+	 * benefit, and it'd require greenplum_fdw to know more than is desirable
 	 * about Param evaluation.)
 	 */
 	*param_exprs = ExecInitExprList(fdw_exprs, node);
@@ -4423,7 +4423,7 @@ postgresAnalyzeForeignTable(Relation relation,
 }
 
 /*
- * Acquire a random sample of rows from foreign table managed by postgres_fdw.
+ * Acquire a random sample of rows from foreign table managed by greenplum_fdw.
  *
  * We fetch the whole table from the remote side and pick out some sample rows.
  *
@@ -4467,7 +4467,7 @@ postgresAcquireSampleRowsFunc(Relation relation, int elevel,
 	/* Remember ANALYZE context, and create a per-tuple temp context */
 	astate.anl_cxt = CurrentMemoryContext;
 	astate.temp_cxt = AllocSetContextCreate(CurrentMemoryContext,
-											"postgres_fdw temporary data",
+											"greenplum_fdw temporary data",
 											ALLOCSET_SMALL_SIZES);
 
 	/*

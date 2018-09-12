@@ -16,14 +16,14 @@
  * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
- *	  contrib/postgres_fdw/shippable.c
+ *	  contrib/greenplum_fdw/shippable.c
  *
  *-------------------------------------------------------------------------
  */
 
 #include "postgres.h"
 
-#include "postgres_fdw.h"
+#include "greenplum_fdw.h"
 
 #include "access/transam.h"
 #include "catalog/dependency.h"

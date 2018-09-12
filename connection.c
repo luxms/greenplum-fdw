@@ -1,18 +1,18 @@
 /*-------------------------------------------------------------------------
  *
  * connection.c
- *		  Connection management functions for postgres_fdw
+ *		  Connection management functions for greenplum_fdw
  *
  * Portions Copyright (c) 2012-2019, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
- *		  contrib/postgres_fdw/connection.c
+ *		  contrib/greenplum_fdw/connection.c
  *
  *-------------------------------------------------------------------------
  */
 #include "postgres.h"
 
-#include "postgres_fdw.h"
+#include "greenplum_fdw.h"
 
 #include "access/htup_details.h"
 #include "access/xact.h"
@@ -120,7 +120,7 @@ GetConnection(UserMapping *user, bool will_prep_stmt)
 		ctl.entrysize = sizeof(ConnCacheEntry);
 		/* allocate ConnectionHash in the cache context */
 		ctl.hcxt = CacheMemoryContext;
-		ConnectionHash = hash_create("postgres_fdw connections", 8,
+		ConnectionHash = hash_create("greenplum_fdw connections", 8,
 									 &ctl,
 									 HASH_ELEM | HASH_BLOBS | HASH_CONTEXT);
 
@@ -200,7 +200,7 @@ GetConnection(UserMapping *user, bool will_prep_stmt)
 		/* Now try to make the connection */
 		entry->conn = connect_pg_server(server, user);
 
-		elog(DEBUG3, "new postgres_fdw connection %p for server \"%s\" (user mapping oid %u, userid %u)",
+		elog(DEBUG3, "new greenplum_fdw connection %p for server \"%s\" (user mapping oid %u, userid %u)",
 			 entry->conn, server->servername, user->umid, user->userid);
 	}
 
@@ -248,9 +248,9 @@ connect_pg_server(ForeignServer *server, UserMapping *user)
 		n += ExtractConnectionOptions(user->options,
 									  keywords + n, values + n);
 
-		/* Use "postgres_fdw" as fallback_application_name. */
+		/* Use "greenplum_fdw" as fallback_application_name. */
 		keywords[n] = "fallback_application_name";
-		values[n] = "postgres_fdw";
+		values[n] = "greenplum_fdw";
 		n++;
 
 		/* Set client_encoding so that libpq can convert encoding properly. */
@@ -376,7 +376,7 @@ configure_remote_session(PGconn *conn)
 	/*
 	 * Set values needed to ensure unambiguous data output from remote.  (This
 	 * logic should match what pg_dump does.  See also set_transmission_modes
-	 * in postgres_fdw.c.)
+	 * in greenplum_fdw.c.)
 	 */
 	do_sql_command(conn, "SET datestyle = ISO");
 	if (remoteversion >= 80400)
@@ -702,7 +702,7 @@ pgfdw_xact_callback(XactEvent event, void *arg)
 					 * probably not worth trying harder.
 					 *
 					 * DEALLOCATE ALL only exists in 8.3 and later, so this
-					 * constrains how old a server postgres_fdw can
+					 * constrains how old a server greenplum_fdw can
 					 * communicate with.  We intentionally ignore errors in
 					 * the DEALLOCATE, so that we can hobble along to some
 					 * extent with older servers (leaking prepared statements
