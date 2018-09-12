@@ -1,18 +1,18 @@
 /*-------------------------------------------------------------------------
  *
  * option.c
- *		  FDW option handling for postgres_fdw
+ *		  FDW option handling for greenplum_fdw
  *
  * Portions Copyright (c) 2012-2019, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
- *		  contrib/postgres_fdw/option.c
+ *		  contrib/greenplum_fdw/option.c
  *
  *-------------------------------------------------------------------------
  */
 #include "postgres.h"
 
-#include "postgres_fdw.h"
+#include "greenplum_fdw.h"
 
 #include "access/reloptions.h"
 #include "catalog/pg_foreign_server.h"
@@ -35,10 +35,10 @@ typedef struct PgFdwOption
 } PgFdwOption;
 
 /*
- * Valid options for postgres_fdw.
+ * Valid options for greenplum_fdw.
  * Allocated and filled in InitPgFdwOptions.
  */
-static PgFdwOption *postgres_fdw_options;
+static PgFdwOption *greenplum_fdw_options;
 
 /*
  * Valid options for libpq.
@@ -56,14 +56,14 @@ static bool is_libpq_option(const char *keyword);
 
 /*
  * Validate the generic options given to a FOREIGN DATA WRAPPER, SERVER,
- * USER MAPPING or FOREIGN TABLE that uses postgres_fdw.
+ * USER MAPPING or FOREIGN TABLE that uses greenplum_fdw.
  *
  * Raise an ERROR if the option or its value is considered invalid.
  */
-PG_FUNCTION_INFO_V1(postgres_fdw_validator);
+PG_FUNCTION_INFO_V1(greenplum_fdw_validator);
 
 Datum
-postgres_fdw_validator(PG_FUNCTION_ARGS)
+greenplum_fdw_validator(PG_FUNCTION_ARGS)
 {
 	List	   *options_list = untransformRelOptions(PG_GETARG_DATUM(0));
 	Oid			catalog = PG_GETARG_OID(1);
@@ -73,7 +73,7 @@ postgres_fdw_validator(PG_FUNCTION_ARGS)
 	InitPgFdwOptions();
 
 	/*
-	 * Check that only options supported by postgres_fdw, and allowed for the
+	 * Check that only options supported by greenplum_fdw, and allowed for the
 	 * current object type, are given.
 	 */
 	foreach(cell, options_list)
@@ -90,7 +90,7 @@ postgres_fdw_validator(PG_FUNCTION_ARGS)
 			StringInfoData buf;
 
 			initStringInfo(&buf);
-			for (opt = postgres_fdw_options; opt->keyword; opt++)
+			for (opt = greenplum_fdw_options; opt->keyword; opt++)
 			{
 				if (catalog == opt->optcontext)
 					appendStringInfo(&buf, "%s%s", (buf.len > 0) ? ", " : "",
@@ -181,7 +181,7 @@ InitPgFdwOptions(void)
 	};
 
 	/* Prevent redundant initialization. */
-	if (postgres_fdw_options)
+	if (greenplum_fdw_options)
 		return;
 
 	/*
@@ -205,22 +205,22 @@ InitPgFdwOptions(void)
 
 	/*
 	 * Construct an array which consists of all valid options for
-	 * postgres_fdw, by appending FDW-specific options to libpq options.
+	 * greenplum_fdw, by appending FDW-specific options to libpq options.
 	 *
-	 * We use plain malloc here to allocate postgres_fdw_options because it
+	 * We use plain malloc here to allocate greenplum_fdw_options because it
 	 * lives as long as the backend process does.  Besides, keeping
 	 * libpq_options in memory allows us to avoid copying every keyword
 	 * string.
 	 */
-	postgres_fdw_options = (PgFdwOption *)
+	greenplum_fdw_options = (PgFdwOption *)
 		malloc(sizeof(PgFdwOption) * num_libpq_opts +
 			   sizeof(non_libpq_options));
-	if (postgres_fdw_options == NULL)
+	if (greenplum_fdw_options == NULL)
 		ereport(ERROR,
 				(errcode(ERRCODE_FDW_OUT_OF_MEMORY),
 				 errmsg("out of memory")));
 
-	popt = postgres_fdw_options;
+	popt = greenplum_fdw_options;
 	for (lopt = libpq_options; lopt->keyword; lopt++)
 	{
 		/* Hide debug options, as well as settings we override internally. */
@@ -250,7 +250,7 @@ InitPgFdwOptions(void)
 }
 
 /*
- * Check whether the given option is one of the valid postgres_fdw options.
+ * Check whether the given option is one of the valid greenplum_fdw options.
  * context is the Oid of the catalog holding the object the option is for.
  */
 static bool
@@ -258,9 +258,9 @@ is_valid_option(const char *keyword, Oid context)
 {
 	PgFdwOption *opt;
 
-	Assert(postgres_fdw_options);	/* must be initialized already */
+	Assert(greenplum_fdw_options);	/* must be initialized already */
 
-	for (opt = postgres_fdw_options; opt->keyword; opt++)
+	for (opt = greenplum_fdw_options; opt->keyword; opt++)
 	{
 		if (context == opt->optcontext && strcmp(opt->keyword, keyword) == 0)
 			return true;
@@ -277,9 +277,9 @@ is_libpq_option(const char *keyword)
 {
 	PgFdwOption *opt;
 
-	Assert(postgres_fdw_options);	/* must be initialized already */
+	Assert(greenplum_fdw_options);	/* must be initialized already */
 
-	for (opt = postgres_fdw_options; opt->keyword; opt++)
+	for (opt = greenplum_fdw_options; opt->keyword; opt++)
 	{
 		if (opt->is_libpq_opt && strcmp(opt->keyword, keyword) == 0)
 			return true;
