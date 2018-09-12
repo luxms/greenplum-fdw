@@ -4,7 +4,7 @@
 This PostgreSQL extension implements a Foreign Data Wrapper (FDW) for
 the [Greenplum database](https://greenplum.org/), which is actually PostgreSQL fork with MPP capabilities.
 
-Greenplum 5 is actually PostgreSQL 8.3 (as of Sept. 2018) and uses libpq wire protocol. So it would be possible just to use postgres_fdw.
+Greenplum 5 is based on PostgreSQL 8.3 (as of Sept. 2018) and uses libpq wire protocol. So it would be possible just to use postgres_fdw.
 But if you do, you will see the error like this:
 
 ```
