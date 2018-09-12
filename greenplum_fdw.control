@@ -1,0 +1,5 @@
+# greenplum_fdw extension
+comment = 'foreign-data wrapper for remote Greenplum servers'
+default_version = '1.0'
+module_pathname = '$libdir/greenplum_fdw'
+relocatable = true
