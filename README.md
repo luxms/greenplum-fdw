@@ -36,7 +36,7 @@ For specific PostgreSQL versions you need corresponding branche:
 | You DB Version  | Branch name        |
 |-----------------|--------------------|
 | PostgreSQL 11.x | gpdb-REL_11_STABLE |
-| PostgreSQL 11.x | gpdb-REL_11_STABLE |
+| PostgreSQL 12.x | gpdb-REL_12_STABLE |
 
 For example for PostgreSQL 11:
 
