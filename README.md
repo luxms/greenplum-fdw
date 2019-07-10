@@ -18,14 +18,30 @@ Another option is to configure FDW to use specific isolation level when it conne
 
  Same code, different isolation level
 ==============================
- 
+
 This is the same code, as the postgres_fdw. The only changes are:
- 
+
  * postgres_fdw renamed to greenplum_fdw where reasonable
  * isolation level for remote transactions set to `SERIALIZABLE`
 
 All [documentation for postgres_fdw](https://www.postgresql.org/docs/current/static/postgres-fdw.html) is releveant and can be used to configure greenplum_fdw.
 
 To make the fork I followed [git Kung-Fu instructions from SO](https://stackoverflow.com/questions/24577084/forking-a-sub-directory-of-a-repository-on-github-and-making-it-part-of-my-own-r), so I hope to keep the code in sync with the mainstream postgres_fdw
- 
 
+ Installation
+==============================
+
+For specific PostgreSQL versions you need corresponding branche:
+
+| You DB Version  | Branch name        |
+|-----------------|--------------------|
+| PostgreSQL 11.x | gpdb-REL_11_STABLE |
+| PostgreSQL 11.x | gpdb-REL_11_STABLE |
+
+For example for PostgreSQL 11:
+
+```sh
+git checkout gpdb-REL_11_STABLE
+USE_PGXS=1 make
+sudo make USE_PGXS=1 install
+```
