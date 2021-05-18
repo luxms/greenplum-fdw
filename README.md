@@ -31,7 +31,7 @@ To make the fork I followed [git Kung-Fu instructions from SO](https://stackover
  Installation
 ==============================
 
-For specific PostgreSQL versions you need corresponding branche:
+Currently we provide only version for PostgreSQL 12 and 13. For specific PostgreSQL versions you need corresponding branch:
 
 | You DB Version  | Branch name        |
 |-----------------|--------------------|
